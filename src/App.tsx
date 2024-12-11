@@ -1,5 +1,6 @@
 import React from 'react';
-import PortfolioGenerator from './components/PortfolioGenerator';
+import { PortfolioGenerator } from './components/PortfolioGenerator';
+import './App.css';
 
 function App() {
   return (
