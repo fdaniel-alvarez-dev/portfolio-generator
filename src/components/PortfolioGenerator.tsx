@@ -1,8 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Layout, Palette, Code, Save } from 'lucide-react';
 
-const PortfolioGenerator = () => {
-  const [formData, setFormData] = useState({
+// Definir interfaces para TypeScript
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  link: string;
+}
+
+interface FormData {
+  name: string;
+  title: string;
+  description: string;
+  skills: string;
+  projects: Project[];
+}
+
+interface Template {
+  name: string;
+  colors: string[];
+}
+
+interface Templates {
+  [key: string]: Template;
+}
+
+interface AIRecommendations {
+  template: string;
+  colors: string[];
+}
+
+export const PortfolioGenerator: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     title: '',
     description: '',
@@ -10,11 +40,11 @@ const PortfolioGenerator = () => {
     projects: []
   });
 
-  const [projects, setProjects] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState('modern');
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('modern');
 
   // Templates predefinidos
-  const templates = {
+  const templates: Templates = {
     modern: {
       name: 'Modern Minimal',
       colors: ['bg-gray-50', 'text-gray-900', 'bg-blue-600']
@@ -30,8 +60,8 @@ const PortfolioGenerator = () => {
   };
 
   // Simular ML para recomendaciones
-  const getAIRecommendations = (data) => {
-    const recommendations = {
+  const getAIRecommendations = (data: FormData): AIRecommendations => {
+    const recommendations: AIRecommendations = {
       template: data.title.toLowerCase().includes('developer') ? 'modern' : 'creative',
       colors: data.title.toLowerCase().includes('designer') ? 
         ['bg-purple-50', 'text-gray-900', 'bg-purple-600'] :
@@ -40,7 +70,7 @@ const PortfolioGenerator = () => {
     return recommendations;
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -55,7 +85,7 @@ const PortfolioGenerator = () => {
     ]);
   };
 
-  const handleProjectChange = (id, field, value) => {
+  const handleProjectChange = (id: number, field: keyof Project, value: string) => {
     setProjects(projects.map(project => 
       project.id === id ? { ...project, [field]: value } : project
     ));
@@ -119,8 +149,8 @@ const PortfolioGenerator = () => {
                   value={formData.description}
                   onChange={handleInputChange}
                   className="w-full p-2 border rounded-md"
-                  rows="4"
-                ></textarea>
+                  rows={4}
+                />
               </div>
               <div>
                 <label className="block text-gray-700 mb-2">Skills (comma separated)</label>
@@ -149,8 +179,8 @@ const PortfolioGenerator = () => {
                   value={project.description}
                   onChange={(e) => handleProjectChange(project.id, 'description', e.target.value)}
                   className="w-full p-2 border rounded-md mb-2"
-                  rows="2"
-                ></textarea>
+                  rows={2}
+                />
                 <input
                   type="text"
                   placeholder="Project Link"
@@ -215,5 +245,3 @@ const PortfolioGenerator = () => {
     </div>
   );
 };
-
-export default PortfolioGenerator;
